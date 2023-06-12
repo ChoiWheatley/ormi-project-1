@@ -73,7 +73,7 @@ const createQuestion = (question) => {
 
 // 화면에 답변 그려주는 함수
 function printAnswer(answer) {
-  $aiCommentary.setHTML(createAnswerElement(answer));
+  $aiCommentary.innerHTML = createAnswerElement(answer);
 }
 
 // api 요청보내는 함수
