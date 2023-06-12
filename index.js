@@ -15,7 +15,7 @@ let url = `https://estsoft-openai-api.jejucodingcamp.workers.dev/`;
 let question;
 
 // 질문과 답변 저장
-let messages = [
+let messagesGlobal = [
   {
     role: "system",
     content: `당신은 명상법의 전문가입니다. 사용자의 현재 정신상태와 달성하고자 하는 목표를 듣고 가장 효과적인 명상법을 추천해 줄 수 있습니다. 명상세션에 가장 잘 어울리는 명상곡도 추천할 수 있습니다.`,
@@ -49,39 +49,44 @@ let messages = [
   },
 ];
 
-// 화면에 뿌려줄 데이터, 질문들
-let questionData = [];
-
 // 사용자의 질문을 객체를 만들어서 push
 const createQuestion = (question) => {
   let result = `명상을 하려고 합니다. `;
-  if (question["userStatuses"].length > 0){
-    result = result.concat(`지금 나의 상태는 [${question["userStatuses"]}]이고, `);
+  if (question["userStatuses"].length > 0) {
+    result = result.concat(
+      `지금 나의 상태는 [${question["userStatuses"]}]이고, `
+    );
   }
-  result = result.concat(`내가 현재 이루고자 하는 목표는 "${question["goal"]}" 입니다. `);
+  result = result.concat(
+    `내가 현재 이루고자 하는 목표는 "${question["goal"]}" 입니다. `
+  );
 
   if (question["other"]) {
     result = result.concat(`또한, ${question["other"]}. `);
   }
 
-  result = result.concat("저에게 필요한 명상음악과 명상법에 대하여 알려주세요.");
+  result = result.concat(
+    "저에게 필요한 명상음악과 명상법에 대하여 알려주세요."
+  );
   return result;
 };
 
 // 화면에 답변 그려주는 함수
-const printAnswer = (answer) => {
-  // TODO: implement
-};
+function printAnswer(answer) {
+  $aiCommentary.setHTML(createAnswerElement(answer));
+}
 
 // api 요청보내는 함수
-const apiPost = async () => {
-  console.log("DEBUG >>> messages = " + messages);
+async function apiPost(question) {
   await fetch(url, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(messages),
+    body: JSON.stringify([
+      ...messagesGlobal,
+      { role: "user", content: question },
+    ]),
     redirect: "follow",
   })
     .then((res) => res.json())
@@ -92,7 +97,7 @@ const apiPost = async () => {
     .catch((err) => {
       console.log(err);
     });
-};
+}
 
 function queryQuestion() {
   let userStatuses = [...$status.querySelectorAll("input")]
@@ -112,12 +117,11 @@ function queryQuestion() {
   };
 }
 
-$askButton.addEventListener("click", (e) => {
+$askButton.addEventListener("click", async (e) => {
   e.preventDefault();
   question = createQuestion(queryQuestion());
   console.log(question);
-  // apiPost();
-  // printAnswer();
+  apiPost(question);
 });
 
 // submit
@@ -146,4 +150,56 @@ function createGoalElement(name) {
               <span class="text-gray-700">${name}</span>
           </div>
   `;
+}
+
+function createAnswerElement(answer) {
+  answer = String(answer).split("\n");
+  let ret = `<div class="flex flex-col gap-2">`;
+  for (let para of answer) {
+    ret = ret.concat(`<div>${para}</div>`);
+  }
+  ret.concat("</div>");
+
+  console.log(ret);
+  return ret;
+}
+
+function LoadingWithMask() {
+  //화면의 높이와 너비를 구합니다.
+  var maskHeight = $aiCommentary.scrollHeight;
+  var maskWidth = $aiCommentary.scrollWidth;
+
+  //화면에 출력할 마스크를 설정해줍니다.
+  var mask =
+    "<div id='mask' style='position:absolute; z-index:9000; background-color:#000000; display:none; left:0; top:0;'></div>";
+  var loadingImg = "./img/Rolling-1s-200px.svg";
+
+  loadingImg += "<div id='loadingImg'>";
+  loadingImg +=
+    " <img src='LoadingImg.gif' style='position: relative; display: block; margin: 0px auto;'/>";
+  loadingImg += "</div>";
+
+  //화면에 레이어 추가
+  $aiCommentary.append(mask).append(loadingImg);
+
+  //마스크의 높이와 너비를 화면 것으로 만들어 전체 화면을 채웁니다.
+  let $mask = $aiCommentary.querySelector("#mask");
+  $mask.style.width = maskWidth;
+  $mask.style.height = maskHeight;
+  $mask.style.opacity = 0.3;
+
+  //마스크 표시
+  $mask.style.display = "block";
+
+  //로딩중 이미지 표시
+  let $loadingImg = $aiCommentary.querySelector("#loadingImg");
+  $loadingImg.style.display = "block";
+}
+
+function closeLoadingWithMask() {
+  let $mask = $aiCommentary.querySelector("#mask");
+  let $loadingImg = $aiCommentary.querySelector("#loadingImg");
+
+  $mask.style.display = "none";
+  $loadingImg.style.display = "none";
 }
