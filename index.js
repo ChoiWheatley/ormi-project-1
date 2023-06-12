@@ -1,6 +1,12 @@
-const $form = document.querySelector("form");
-const $input = document.querySelector("input");
-const $chatList = document.querySelector("ul");
+const $status = document.querySelector("#status");
+const $statusOther = document.querySelector("#status-other");
+const $goal = document.querySelector("#goal");
+const $goalOther = document.querySelector("#goal-other");
+const $other = document.querySelector("#other");
+
+const $askButton = document.querySelector("#ask-button");
+
+const $aiCommentary = document.querySelector("#ai-commentary");
 
 // openAI API
 let url = `https://estsoft-openai-api.jejucodingcamp.workers.dev/`;
@@ -28,63 +34,43 @@ let messages = [
   },
   {
     role: "user",
-    content: "명상법에 대해서도 알려줄 수 있나요?"
+    content: "명상법에 대해서도 알려줄 수 있나요?",
   },
   {
     role: "assistant",
     content: `네! 저는 다양한 명상기법을 알고있습니다. 다양한 상황과 목적에 적합한 명상법을 소개시켜드릴 수 있습니다.
     먼저 몸과 정신의 이완이 필요한 경우 Yoga Nidra를 추천합니다. 온 몸 구석구석을 마음의 눈으로 바라보면 숙면을 더욱 효율적으로 할 수 있으며, 짧은 시간에 몸과 마음을 진정시켜 줄 수 있습니다.
     우울감으로부터 빠져나오기 위해선 우리는 생각한 것 이상으로 강하다는 사실을 알 필요가 있습니다. 따라서 인위적인 호흡을 유도하거나 땀을 내는 운동, 빈야사 요가 등 몸을 덥히는 것으로 생기를 되찾을 수 있습니다.
-    명상할 시간이 없다고 생각해도 1분 이내로 빠르게 정상궤도에 오르는 방법을 알고 있습니다. 그것은 바로 호흡을 의식하는 것입니다. 불규칙했던 나의 호흡은 1분이라는 긴 시간동안 어느새 일정한 리듬을 반복하고 있음을 깨닫게 되고 다시 문제해결에 돌입할 수 있게 됩니다.
+    명상할 시간이 없어도 1분 이내로 빠르게 정상궤도에 오르는 방법을 알고 있습니다. 그것은 바로 호흡을 의식하는 것입니다. 불규칙했던 나의 호흡은 1분이라는 긴 시간동안 어느새 일정한 리듬을 반복하고 있음을 깨닫게 되고 다시 문제해결에 돌입할 수 있게 됩니다.
     머릿속이 생각으로 가득차거나 주변이 산만한 경우에도 명상은 도움이 많이 됩니다. 마음챙김 명상을 통하여 자신을 하나의 큰 도넛이라고 생각해보세요. 모든 생각과 소음이 어떤 의식적인 가공 없이 내 안에 커다란 구멍을 통해 자유롭게 지나가는 상상을 해 보세요.
 
     자, 이제 당신의 현재 정신상태와 이루고자 하는 목표에 대하여 알려주세요. 제가 두 가지 답변을 바탕으로 명상음악과 명상법에 대하여 안내해드리겠습니다.
-    `
+    `,
   },
 ];
 
 // 화면에 뿌려줄 데이터, 질문들
 let questionData = [];
 
-// input에 입력된 질문 받아오는 함수
-$input.addEventListener("input", (e) => {
-  question = e.target.value;
-});
-
 // 사용자의 질문을 객체를 만들어서 push
-const sendQuestion = (question) => {
-  if (question) {
-    messages.push({
-      role: "user",
-      content: question,
-    });
-    questionData.push({
-      role: "user",
-      content: question,
-    });
+const createQuestion = (question) => {
+  let result = `명상을 하려고 합니다. `;
+  if (question["userStatuses"].length > 0){
+    result = result.concat(`지금 나의 상태는 [${question["userStatuses"]}]이고, `);
   }
-};
+  result = result.concat(`내가 현재 이루고자 하는 목표는 "${question["goal"]}" 입니다. `);
 
-// 화면에 질문 그려주는 함수
-const printQuestion = async () => {
-  if (question) {
-    let li = document.createElement("li");
-    li.classList.add("question");
-    questionData.map((el) => {
-      li.innerText = el.content;
-    });
-    $chatList.appendChild(li);
-    questionData = [];
-    question = false;
+  if (question["other"]) {
+    result = result.concat(`또한, ${question["other"]}. `);
   }
+
+  result = result.concat("저에게 필요한 명상음악과 명상법에 대하여 알려주세요.");
+  return result;
 };
 
 // 화면에 답변 그려주는 함수
 const printAnswer = (answer) => {
-  let li = document.createElement("li");
-  li.classList.add("answer");
-  li.innerText = answer;
-  $chatList.appendChild(li);
+  // TODO: implement
 };
 
 // api 요청보내는 함수
@@ -108,11 +94,56 @@ const apiPost = async () => {
     });
 };
 
-// submit
-$form.addEventListener("submit", (e) => {
+function queryQuestion() {
+  let userStatuses = [...$status.querySelectorAll("input")]
+    .filter((box) => box.checked)
+    .map((box) => box.id);
+
+  let goal = [...$goal.querySelectorAll("input")]
+    .filter((radio) => radio.checked)
+    .map((radio) => radio.id);
+
+  let other = $other.value;
+
+  return {
+    userStatuses: userStatuses,
+    goal: goal,
+    other: other,
+  };
+}
+
+$askButton.addEventListener("click", (e) => {
   e.preventDefault();
-  $input.value = null;
-  sendQuestion(question);
-  apiPost();
-  printQuestion();
+  question = createQuestion(queryQuestion());
+  console.log(question);
+  // apiPost();
+  // printAnswer();
 });
+
+// submit
+// $form.addEventListener("submit", (e) => {
+//   e.preventDefault();
+//   $input.value = null;
+//   sendQuestion(question);
+//   apiPost();
+//   printQuestion();
+// });
+
+function createStatusElement(name) {
+  return `<div class="flex">
+              <label for="status" class="mr-3">
+                  <input type="checkbox" name="status" class="form-radio text-indigo-600 h-5 w-5" id="${name}">
+              </label>
+              <span class="text-gray-700">${name}</span>
+          </div>`;
+}
+
+function createGoalElement(name) {
+  return `<div class="flex">
+              <label for="status" class="mr-3">
+                  <input type="radio" name="goal" class="form-radio text-indigo-600 h-5 w-5" id="${name}">
+              </label>
+              <span class="text-gray-700">${name}</span>
+          </div>
+  `;
+}
