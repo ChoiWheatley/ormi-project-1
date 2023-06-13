@@ -9,3 +9,7 @@ So before you fork and modify this project, make sure you running following comm
 ```shell
 npx tailwindcss -i .\input.css -o .\output.css --watch
 ```
+
+## In a nutshell
+
+![image](https://github.com/ChoiWheatley/ormi-project-1/assets/18757823/7070e0bc-25bd-4426-b803-ad796b1dbcee)
