@@ -17,92 +17,44 @@
     <div class="md:container md:mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-5">
 
-            <!-- prompt -->
             <div class="col-span-2 flex flex-col gap-3">
-                <div id="status" class="flex flex-col gap-2 px-5 py-5 border-2 rounded-md">
-                    <div class="text-center text-2xl font-extrabold mb-2">현재 상태를 모두 체크해주세요 (추가 가능)</div>
-                    <div class="flex">
-                        <label for="status" class="mr-3">
-                            <input type="checkbox" name="status" id="우울함"
-                                class="form-radio text-indigo-600 h-5 w-5">
-                        </label>
-                        <span class="text-gray-700">우울함</span>
-                    </div>
-                    <div class="flex">
-                        <label for="status" class="mr-3">
-                            <input type="checkbox" name="status" id="불안함"
-                                class="form-radio text-indigo-600 h-5 w-5">
-                        </label>
-                        <span class="text-gray-700">불안함</span>
-                    </div>
-                    <div class="flex">
-                        <label for="status" class="mr-3">
-                            <input type="checkbox" name="status" id="산만함"
-                                class="form-radio text-indigo-600 h-5 w-5">
-                        </label>
-                        <span class="text-gray-700">산만함</span>
-                    </div>
-                    <div class="flex">
-                        <label for="status" class="mr-3">
-                            <input type="checkbox" name="status" id="status4"
-                                class="form-radio text-indigo-600 h-5 w-5">
-                        </label>
-                        <span class="text-gray-700 w-full">
-                            <input type="text" name="status" id="status-other"
-                                class="p-2 bg-slate-200 rounded-md w-full" placeholder="other">
-                        </span>
+
+                <!-- SECTION status -->
+                <div class="border-2 rounded-md p-5">
+                    <h1 class="text-center text-2xl font-extrabold mb-2">현재 상태를 모두 체크해주세요</h1>
+                    <div id="status" class="flex flex-col gap-2">
+                        <!-- NOTE - auto fill -->
                     </div>
                 </div>
-                <div id="goal" class="flex flex-col gap-2 px-5 py-5 border-2 rounded-md">
-                    <div class="text-center text-2xl font-extrabold mb-2">이루고자 하는 목표 (Radio select)</div>
+                <!-- !SECTION -->
 
-                    <div class="flex">
-                        <label for="radio1" class="mr-3">
-                            <input type="radio" id="생기를 되찾기" name="goal" class="form-radio text-indigo-600 h-5 w-5"
-                                checked>
-                        </label>
-                        <span class="text-gray-700">생기를 되찾기</span>
-                    </div>
-
-                    <div class="flex">
-                        <label for="radio2" class="mr-3">
-                            <input type="radio" id="깊은 휴식" name="goal" class="form-radio text-indigo-600 h-5 w-5">
-                        </label>
-                        <span class="text-gray-700">깊은 휴식</span>
-                    </div>
-
-                    <div class="flex">
-                        <label for="radio3" class="mr-3">
-                            <input type="radio" id="우울감 극복" name="goal" class="form-radio text-indigo-600 h-5 w-5">
-                        </label>
-                        <span class="text-gray-700">우울감 극복</span>
-                    </div>
-
-                    <div class="flex">
-                        <label for="radio3" class="mr-3">
-                            <input type="radio" id="radio4" name="goal" class="form-radio text-indigo-600 h-5 w-5">
-                        </label>
-                        <span class="text-gray-700 w-full">
-                            <input type="text" name="goal-other" id="goal-other"
-                                class="p-2 bg-slate-200 rounded-md w-full" placeholder="other">
-                        </span>
+                <!-- SECTION goal -->
+                <div class="border-2 rounded-md p-5">
+                    <div class="text-center text-2xl font-extrabold mb-2">이루고자 하는 목표 </div>
+                    <div id="goal" class="flex flex-col gap-2">
+                        <!-- NOTE - auto fill -->
                     </div>
                 </div>
+                <!-- !SECTION -->
+
+                <!-- SECTION other -->
+                <div class="text-center text-2xl font-extrabold mb-2">기타 프롬프트에 추가할 사항을 적어주세요</div>
                 <div class="flex flex-col gap-2 px-5 py-5 border-2 rounded-md">
-                    <div class="text-center text-2xl font-extrabold mb-2">기타 프롬프트에 추가할 사항을 적어주세요</div>
                     <input class="p-2 bg-slate-200 rounded-md w-full" type="text" name="other" id="other"
                         placeholder="other">
                 </div>
+                <!-- !SECTION -->
             </div>
 
-            <!-- button -->
+            <!-- SECTION button -->
             <label class="w-24 h-24 m-4 p-2 place-self-center bg-teal-100 rounded-full shadow-lg ">
                 <button id="ask-button" class="h-full w-full align-middle  text-slate-700 ">
                     <ion-icon size="large" name="send-outline"></ion-icon>
                 </button>
             </label>
+            <!-- !SECTION -->
 
-            <!-- AI commentary -->
+            <!-- SECTION AI commentary -->
             <div class="col-span-2 p-5 border-2 rounded-md bg-scroll " id="ai-commentary">
                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Adipisci, consequatur? Quod in cupiditate quae.
                 Facere reiciendis, dolorum doloremque aliquid atque at repellendus iure aut quis odit vitae ab suscipit
@@ -131,6 +83,7 @@
                 Blanditiis nulla cupiditate delectus in necessitatibus debitis magnam, fuga voluptate velit nostrum esse
                 fugit dolorem beatae vitae.
             </div>
+            <!-- !SECTION -->
 
         </div>
     </div>

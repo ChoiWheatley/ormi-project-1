@@ -1,20 +1,42 @@
 const $status = document.querySelector("#status");
-const $statusOther = document.querySelector("#status-other");
 const $goal = document.querySelector("#goal");
-const $goalOther = document.querySelector("#goal-other");
-const $other = document.querySelector("#other");
-
+const $otherInput = document.querySelector("#other");
 const $askButton = document.querySelector("#ask-button");
-
 const $aiCommentary = document.querySelector("#ai-commentary");
+const $statusOther = Object.assign(document.createElement(`div`), {
+  innerHTML: `
+<div id="status-other" class="flex">
+  <button id="status-add" class="mr-3">
+      <ion-icon name="add" style="color: indigo; font-size: 1.5rem"></ion-icon>
+  </button>
+  <span class="text-gray-700 w-full">
+      <input type="text" name="status" id="status-other-input"
+          class="p-2 bg-slate-200 rounded-md w-full" placeholder="add other status">
+  </span>
+</div>
+  `,
+});
+const $goalOther = Object.assign(document.createElement(`div`), {
+  innerHTML: `
+<div id="goal-other" class="flex">
+  <label for="goal" class="mr-3">
+      <input type="radio" name="goal" class="form-radio text-indigo-600 h-5 w-5">
+  </label>
+  <span class="text-gray-700 w-full">
+      <input type="text" name="goal-other" id="goal-other-input"
+          class="p-2 bg-slate-200 rounded-md w-full" placeholder="goal other">
+  </span>
+<div>
+`,
+});
 
 // openAI API
-let url = `https://estsoft-openai-api.jejucodingcamp.workers.dev/`;
+const URL = `https://estsoft-openai-api.jejucodingcamp.workers.dev/`;
 
-// 사용자의 질문
-let question;
+let statusListGlobal = ["우울함", "불안함", "산만함", "피곤함"];
+let goalListGlobal = ["생기를 되찾기", "깊은 휴식", "우울감 극복", "집중"];
 
-// 질문과 답변 저장
+// SECTION - 질문과 답변 저장
 let messagesGlobal = [
   {
     role: "system",
@@ -48,7 +70,9 @@ let messagesGlobal = [
     `,
   },
 ];
+//!SECTION
 
+//SECTION - 질문생성
 // 사용자의 질문을 객체를 만들어서 push
 const createQuestion = (question) => {
   let result = `명상을 하려고 합니다. `;
@@ -78,7 +102,7 @@ function printAnswer(answer) {
 
 // api 요청보내는 함수
 async function apiPost(question) {
-  await fetch(url, {
+  await fetch(URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -102,13 +126,14 @@ async function apiPost(question) {
 function queryQuestion() {
   let userStatuses = [...$status.querySelectorAll("input")]
     .filter((box) => box.checked)
-    .map((box) => box.id);
+    .map((box) => box.value);
 
   let goal = [...$goal.querySelectorAll("input")]
     .filter((radio) => radio.checked)
-    .map((radio) => radio.id);
+    .map((radio) => radio.value);
+  console.log(`DEBUG >>> goal: ${goal}`);
 
-  let other = $other.value;
+  let other = $otherInput.value;
 
   return {
     userStatuses: userStatuses,
@@ -116,39 +141,29 @@ function queryQuestion() {
     other: other,
   };
 }
+//!SECTION
 
-$askButton.addEventListener("click", async (e) => {
-  e.preventDefault();
-  question = createQuestion(queryQuestion());
-  console.log(question);
-  apiPost(question);
-});
-
-// submit
-// $form.addEventListener("submit", (e) => {
-//   e.preventDefault();
-//   $input.value = null;
-//   sendQuestion(question);
-//   apiPost();
-//   printQuestion();
-// });
+// SECTION create elements
 
 function createStatusElement(name) {
-  return `<div class="flex">
-              <label for="status" class="mr-3">
-                  <input type="checkbox" name="status" class="form-radio text-indigo-600 h-5 w-5" id="${name}">
-              </label>
-              <span class="text-gray-700">${name}</span>
-          </div>`;
+  return `
+<div class="flex">
+    <label for="status" class="mr-3">
+        <input type="checkbox" name="status" class="form-radio text-indigo-600 h-5 w-5" value="${name}">
+    </label>
+    <span class="text-gray-700">${name}</span>
+</div>
+  `;
 }
 
 function createGoalElement(name) {
-  return `<div class="flex">
-              <label for="status" class="mr-3">
-                  <input type="radio" name="goal" class="form-radio text-indigo-600 h-5 w-5" id="${name}">
-              </label>
-              <span class="text-gray-700">${name}</span>
-          </div>
+  return `
+<div class="flex">
+    <label for="goal" class="mr-3">
+        <input type="radio" name="goal" class="form-radio text-indigo-600 h-5 w-5" value="${name}">
+    </label>
+    <span class="text-gray-700">${name}</span>
+</div>
   `;
 }
 
@@ -163,6 +178,18 @@ function createAnswerElement(answer) {
   console.log(ret);
   return ret;
 }
+
+// reset prompt with list
+function setHtmlWith(list, createElementCallback) {
+  let result = "";
+  for (let name of list) {
+    let html = createElementCallback(name);
+    result = result.concat(html);
+  }
+  return result;
+}
+
+// !SECTION
 
 function LoadingWithMask() {
   //화면의 높이와 너비를 구합니다.
@@ -203,3 +230,39 @@ function closeLoadingWithMask() {
   $mask.style.display = "none";
   $loadingImg.style.display = "none";
 }
+
+//SECTION - INITIALISE
+$status.innerHTML = setHtmlWith(statusListGlobal, createStatusElement);
+$status.appendChild($statusOther);
+$goal.innerHTML = setHtmlWith(goalListGlobal, createGoalElement);
+$goal.appendChild($goalOther);
+
+//SECTION - event listeners
+const $statusAddBtn = document.querySelector("#status-add");
+const $goalOtherInput = document.querySelector("#goal-other-input");
+const $statusOtherInput = document.querySelector("#status-other-input");
+
+$askButton.addEventListener("click", (e) => {
+  e.preventDefault();
+  let question = createQuestion(queryQuestion());
+  console.log(question);
+  apiPost(question);
+});
+
+$statusAddBtn.addEventListener("click", (e) => {
+  if ($statusOtherInput.value) {
+    statusListGlobal.push($statusOtherInput.value);
+    $statusOtherInput.value = null;
+    $status.innerHTML = setHtmlWith(statusListGlobal, createStatusElement);
+    $status.appendChild($statusOther);
+  }
+});
+
+$goalOtherInput.addEventListener("change", (e) => {
+  console.log($goalOtherInput.value);
+  $goalOther
+    .querySelector("input")
+    .setAttribute("value", $goalOtherInput.value);
+});
+//!SECTION
+//!SECTION
