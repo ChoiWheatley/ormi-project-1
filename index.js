@@ -188,48 +188,7 @@ function setHtmlWith(list, createElementCallback) {
   }
   return result;
 }
-
 // !SECTION
-
-function LoadingWithMask() {
-  //화면의 높이와 너비를 구합니다.
-  var maskHeight = $aiCommentary.scrollHeight;
-  var maskWidth = $aiCommentary.scrollWidth;
-
-  //화면에 출력할 마스크를 설정해줍니다.
-  var mask =
-    "<div id='mask' style='position:absolute; z-index:9000; background-color:#000000; display:none; left:0; top:0;'></div>";
-  var loadingImg = "./img/Rolling-1s-200px.svg";
-
-  loadingImg += "<div id='loadingImg'>";
-  loadingImg +=
-    " <img src='LoadingImg.gif' style='position: relative; display: block; margin: 0px auto;'/>";
-  loadingImg += "</div>";
-
-  //화면에 레이어 추가
-  $aiCommentary.append(mask).append(loadingImg);
-
-  //마스크의 높이와 너비를 화면 것으로 만들어 전체 화면을 채웁니다.
-  let $mask = $aiCommentary.querySelector("#mask");
-  $mask.style.width = maskWidth;
-  $mask.style.height = maskHeight;
-  $mask.style.opacity = 0.3;
-
-  //마스크 표시
-  $mask.style.display = "block";
-
-  //로딩중 이미지 표시
-  let $loadingImg = $aiCommentary.querySelector("#loadingImg");
-  $loadingImg.style.display = "block";
-}
-
-function closeLoadingWithMask() {
-  let $mask = $aiCommentary.querySelector("#mask");
-  let $loadingImg = $aiCommentary.querySelector("#loadingImg");
-
-  $mask.style.display = "none";
-  $loadingImg.style.display = "none";
-}
 
 //SECTION - INITIALISE
 $status.innerHTML = setHtmlWith(statusListGlobal, createStatusElement);
