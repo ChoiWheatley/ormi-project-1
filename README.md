@@ -7,5 +7,5 @@ I'm using Pure JS + Tailwind CSS, which depends on `tailwindcss` npx compiler [s
 So before you fork and modify this project, make sure you running following command on terminal:
 
 ```shell
-npx tailwindcss -i ./src/input.css -o ./dist/output.css --watch
+npx tailwindcss -i .\input.css -o .\output.css --watch
 ```
