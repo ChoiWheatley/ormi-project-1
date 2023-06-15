@@ -6,14 +6,19 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>명상가이드</title>
-    <link rel="stylesheet" href="./output.css">
     <script src="./index.js" defer type="module"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body>
-    <h1 class="text-3xl font-bold underline my-4 mx-3">Welcome to Meditation Centre!</h1>
+    <header>
+        <nav class="relative flex w-full items-center justify-between bg-white py-2 text-neutral-600 shadow-lg hover:text-neutral-700 md:flex-wrap md:justify-start text-3xl font-bold underline p-5 mb-5"
+            data-te-navbar-ref>
+            Welcome to Meditation Centre!
+        </nav>
+    </header>
     <div class="md:container md:mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-5">
 
@@ -62,7 +67,8 @@
 
         </div>
     </div>
-    <footer class="bg-neutral-100 text-center text-neutral-600 dark:bg-neutral-600 dark:text-neutral-200 lg:text-left p-5">
+    <footer
+        class="bg-neutral-100 text-center text-neutral-600 dark:bg-neutral-600 dark:text-neutral-200 lg:text-left p-5">
         <!--Copyright section-->
         <div class="bg-neutral-200 p-6 text-center dark:bg-neutral-700">
             <span>© 2023 Copyright:</span>
