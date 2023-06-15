@@ -115,7 +115,6 @@ async function apiPost(question) {
   })
     .then((res) => res.json())
     .then((res) => {
-      console.log(res);
       printAnswer(res.choices[0].message.content);
     })
     .catch((err) => {
@@ -131,7 +130,6 @@ function queryQuestion() {
   let goal = [...$goal.querySelectorAll("input")]
     .filter((radio) => radio.checked)
     .map((radio) => radio.value);
-  console.log(`DEBUG >>> goal: ${goal}`);
 
   let other = $otherInput.value;
 
@@ -175,7 +173,6 @@ function createAnswerElement(answer) {
   }
   ret.concat("</div>");
 
-  console.log(ret);
   return ret;
 }
 
@@ -204,7 +201,6 @@ const $statusOtherInput = document.querySelector("#status-other-input");
 $askButton.addEventListener("click", (e) => {
   e.preventDefault();
   let question = createQuestion(queryQuestion());
-  console.log(question);
   apiPost(question);
 });
 
@@ -218,7 +214,6 @@ $statusAddBtn.addEventListener("click", (e) => {
 });
 
 $goalOtherInput.addEventListener("change", (e) => {
-  console.log($goalOtherInput.value);
   $goalOther
     .querySelector("input")
     .setAttribute("value", $goalOtherInput.value);
